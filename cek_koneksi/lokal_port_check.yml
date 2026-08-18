@@ -1,0 +1,28 @@
+---
+- name: Local Port Validator Playbook
+  hosts: localhost
+  connection: local # Run directly on desktop without SSH connection
+  gather_facts: false
+
+  vars:
+    # Defining target socket variables
+    target_host: "127.0.0.1"
+    target_port: 5432
+    timeout_duration: 5 # Maximum seconds to wait
+
+  tasks:
+    - name: Verify if local port is accepting database connections
+      ansible.builtin.wait_for:
+        host: "{{ target_host }}"
+        port: "{{ target_port }}"
+        state: started # Ensure the socket port status is open
+        timeout: "{{ timeout_duration }}"
+      register: port_check_result
+      ignore_errors: true # Prevent playbook from crashing if closed
+
+    - name: Print connection outcome to desktop stdout
+      ansible.builtin.debug:
+        msg: >
+          Verification complete!
+          Port {{ target_port }} status on {{ target_host }} is:
+          {{ 'OPEN and responding' if port_check_result.failed is not defined else 'CLOSED or unreachable' }}

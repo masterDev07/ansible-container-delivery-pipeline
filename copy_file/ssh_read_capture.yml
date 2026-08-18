@@ -1,0 +1,50 @@
+# ---
+# - name: Remote SSH File Reading and Local Output Logging
+#   hosts: tigas
+#   gather_facts: false
+
+#   vars:
+#     # "Properties": Configuration attributes for file locations
+#     remote_target_file: "/data/data/com.termux/files/home/storage/shared/jamBira/kode_ku/CatatanSementara.txt"
+#     local_output_log: "~/Public/hola.txt"
+
+#   tasks:
+#     - name: Read the content of the remote file
+#       # "Method": Execute shell command on the remote object
+#       ansible.builtin.shell: "cat {{ remote_target_file }}"
+#       register: remote_file_content
+
+#     - name: Write the captured content into local file
+#       # "Fix": Use local_action as a top-level keyword, not a module path
+#       local_action:
+#         module: ansible.builtin.copy
+#         content: "{{ remote_file_content.stdout }}\n"
+#         dest: "{{ local_output_log }}"
+
+
+---
+- name: Remote SSH File Reading and Local Output Logging
+  hosts: tigas
+  gather_facts: false
+
+  vars:
+    # "Properties": Define global file paths for both objects
+    remote_target_file: "/data/data/com.termux/files/home/storage/shared/jamBira/kode_ku/CatatanSementara.txt"
+    local_output_log: "~/Public/hola.txt"
+
+  tasks:
+    - name: Read the content of the remote file
+      ansible.builtin.shell: "cat {{ remote_target_file }}"
+      register: remote_file_content
+      vars:
+        # "Local Override": Apply this interpreter ONLY for this specific remote task
+        ansible_python_interpreter: /data/data/com.termux/files/usr/bin/python3
+
+    - name: Write the captured content into local file
+      # "Method": Execute copy strictly on localhost with its native python engine
+      ansible.builtin.copy:
+        content: "{{ remote_file_content.stdout }}\n"
+        dest: "{{ local_output_log }}"
+      delegate_to: localhost
+
+

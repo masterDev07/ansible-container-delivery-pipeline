@@ -1,0 +1,14 @@
+---
+- name: Unique Cashier Validation Playbook
+  hosts: custom_cashiers
+  gather_facts: false
+
+  tasks:
+    - name: Trigger ping method on non-uniform server names
+      ansible.builtin.ping:
+      register: custom_ping_result
+
+    - name: Print individualized connection status on desktop stdout
+      ansible.builtin.debug:
+        msg: "Target device '{{ inventory_hostname }}' connection status is online."
+      when: custom_ping_result.ping == "pong"

@@ -1,0 +1,21 @@
+---
+- name: Cashier Fleet Management Playbook
+  hosts: cashiers
+  gather_facts: false
+  # Defining parallel execution threads (forks) to handle multiple objects at once
+  vars:
+    ansible_forks: 50
+
+  tasks:
+    # TASK 1: Check if computers are online
+    - name: Verify if cashier computers are currently alive
+      ansible.builtin.ping:
+      register: ping_result
+      tags: check_status
+
+    # TASK 2: Mass reboot execution (Only runs when explicitly called)
+    - name: Trigger mass reboot on all cashier devices safely
+      ansible.builtin.reboot:
+        reboot_timeout: 300 # Wait up to 5 minutes for computer to come back online
+        msg: "System reboot initiated by Fleet Manager via Ansible."
+      tags: mass_reboot

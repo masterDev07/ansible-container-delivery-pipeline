@@ -1,0 +1,13 @@
+---
+- name: Connection Controller Playbook
+  hosts: web_servers
+  gather_facts: false # Speed up the connection checking process
+
+  tasks:
+    - name: Execute ping method to verify server connection
+      ansible.builtin.ping:
+      register: connection_result
+
+    - name: Display connection status on desktop terminal
+      ansible.builtin.debug:
+        msg: "Server {{ inventory_hostname }} connection status is {{ connection_result.ping }}"
