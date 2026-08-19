@@ -1,19 +1,19 @@
 ---
 - name: Automated Daily Time Synchronization Playbook
-  hosts: localhost         # CHANGED: Target is your local Mint laptop, not tigas
-  connection: local        # Run directly on your desktop machine
+  hosts: localhost         # CHANGED: Target is local Mint laptop, not tigas
+  connection: local        # Run directly on desktop machine
   gather_facts: false
   become: true             # Required to change system hardware clock/time
 
   vars:
-    # Defining target paths based on your true environment
+    # Defining target paths based on true environment
     python_executable: "/media/mint/dataku1/backup/kodeku/phphai/python/venv/bin/python3"
     script_path: "/media/mint/dataku1/settingan/cctv_alarm/bangunan/skripBerguna/set_jam.py"
 
     # Using ephemeral RAM-based path so it auto-resets tomorrow when laptop reboots
     flag_file_path: "/run/time_setup_daily_success.flag"
 
-    # Network IP of your Android Termux host
+    # Network IP of Android Termux host
     android_ip: "192.168.43.1"
 
   tasks:
@@ -35,7 +35,7 @@
       when: not flag_check_result.stat.exists
       changed_when: false
 
-    # STEP 3: Execute your time synchronization script using the venv python
+    # STEP 3: Execute time synchronization script using the venv python
     - name: Execute local python script to update laptop system clock
       ansible.builtin.command:
         cmd: "{{ python_executable }} {{ script_path }}"

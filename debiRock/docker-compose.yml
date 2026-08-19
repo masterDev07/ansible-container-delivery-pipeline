@@ -8,13 +8,11 @@ services:
     tty: true
     stdin_open: true
     command: ["sleep", "infinity"]
-    environment:
-      - http_proxy=http://192.168.43.1:44355/
-      - https_proxy=https://192.168.43.1:44355/
-      - HTTP_PROXY=http://192.168.43.1:44355/
-      - HTTPS_PROXY=https://192.168.43.1:44355/
     networks:
-      - ansible_net
+      ansible_net:
+        ipv4_address: 172.28.0.11
+    volumes:
+      - ./apt_cache_data:/var/cache/apt-cacher-ng
 
   debian2:
     image: debian:12-slim
@@ -22,13 +20,9 @@ services:
     tty: true
     stdin_open: true
     command: ["sleep", "infinity"]
-    environment:
-      - http_proxy=http://192.168.43.1:44355/
-      - https_proxy=https://192.168.43.1:44355/
-      - HTTP_PROXY=http://192.168.43.1:44355/
-      - HTTPS_PROXY=https://192.168.43.1:44355/
     networks:
-      - ansible_net
+      ansible_net:
+        ipv4_address: 172.28.0.12
 
   debian3:
     image: debian:12-slim
@@ -36,13 +30,9 @@ services:
     tty: true
     stdin_open: true
     command: ["sleep", "infinity"]
-    environment:
-      - http_proxy=http://192.168.43.1:44355/
-      - https_proxy=https://192.168.43.1:44355/
-      - HTTP_PROXY=http://192.168.43.1:44355/
-      - HTTPS_PROXY=https://192.168.43.1:44355/
     networks:
-      - ansible_net
+      ansible_net:
+        ipv4_address: 172.28.0.13
 
   debian4:
     image: debian:12-slim
@@ -50,13 +40,9 @@ services:
     tty: true
     stdin_open: true
     command: ["sleep", "infinity"]
-    environment:
-      - http_proxy=http://192.168.43.1:44355/
-      - https_proxy=https://192.168.43.1:44355/
-      - HTTP_PROXY=http://192.168.43.1:44355/
-      - HTTPS_PROXY=https://192.168.43.1:44355/
     networks:
-      - ansible_net
+      ansible_net:
+        ipv4_address: 172.28.0.14
 
   debian5:
     image: debian:12-slim
@@ -64,13 +50,9 @@ services:
     tty: true
     stdin_open: true
     command: ["sleep", "infinity"]
-    environment:
-      - http_proxy=http://192.168.43.1:44355/
-      - https_proxy=https://192.168.43.1:44355/
-      - HTTP_PROXY=http://192.168.43.1:44355/
-      - HTTPS_PROXY=https://192.168.43.1:44355/
     networks:
-      - ansible_net
+      ansible_net:
+        ipv4_address: 172.28.0.15
 
   # ==========================================
   # 5 SERVER ROCKY LINUX (Node 1 - 5)
@@ -81,14 +63,9 @@ services:
     tty: true
     stdin_open: true
     command: ["sleep", "infinity"]
-    # === TAMBAHKAN BLOK ENVIRONMENT DI BAWAH INI ===
-    environment:
-      - http_proxy=http://192.168.43.1:44355/
-      - https_proxy=https://192.168.43.1:44355/
-      - HTTP_PROXY=http://192.168.43.1:44355/
-      - HTTPS_PROXY=https://192.168.43.1:44355/
     networks:
-      - ansible_net
+      ansible_net:
+        ipv4_address: 172.28.0.21
 
   rocky2:
     image: rockylinux:8
@@ -96,14 +73,9 @@ services:
     tty: true
     stdin_open: true
     command: ["sleep", "infinity"]
-    # === TAMBAHKAN BLOK ENVIRONMENT DI BAWAH INI ===
-    environment:
-      - http_proxy=http://192.168.43.1:44355/
-      - https_proxy=https://192.168.43.1:44355/
-      - HTTP_PROXY=http://192.168.43.1:44355/
-      - HTTPS_PROXY=https://192.168.43.1:44355/
     networks:
-      - ansible_net
+      ansible_net:
+        ipv4_address: 172.28.0.22
 
   rocky3:
     image: rockylinux:8
@@ -111,14 +83,9 @@ services:
     tty: true
     stdin_open: true
     command: ["sleep", "infinity"]
-    # === TAMBAHKAN BLOK ENVIRONMENT DI BAWAH INI ===
-    environment:
-      - http_proxy=http://192.168.43.1:44355/
-      - https_proxy=https://192.168.43.1:44355/
-      - HTTP_PROXY=http://192.168.43.1:44355/
-      - HTTPS_PROXY=https://192.168.43.1:44355/
     networks:
-      - ansible_net
+      ansible_net:
+        ipv4_address: 172.28.0.23
 
   rocky4:
     image: rockylinux:8
@@ -126,14 +93,9 @@ services:
     tty: true
     stdin_open: true
     command: ["sleep", "infinity"]
-    # === TAMBAHKAN BLOK ENVIRONMENT DI BAWAH INI ===
-    environment:
-      - http_proxy=http://192.168.43.1:44355/
-      - https_proxy=https://192.168.43.1:44355/
-      - HTTP_PROXY=http://192.168.43.1:44355/
-      - HTTPS_PROXY=https://192.168.43.1:44355/
     networks:
-      - ansible_net
+      ansible_net:
+        ipv4_address: 172.28.0.24
 
   rocky5:
     image: rockylinux:8
@@ -141,15 +103,16 @@ services:
     tty: true
     stdin_open: true
     command: ["sleep", "infinity"]
-    # === TAMBAHKAN BLOK ENVIRONMENT DI BAWAH INI ===
-    environment:
-      - http_proxy=http://192.168.43.1:44355/
-      - https_proxy=https://192.168.43.1:44355/
-      - HTTP_PROXY=http://192.168.43.1:44355/
-      - HTTPS_PROXY=https://192.168.43.1:44355/
     networks:
-      - ansible_net
+      ansible_net:
+        ipv4_address: 172.28.0.25
 
+# ==========================================
+# DEFINISI JARINGAN (SUBNET BARU 172.28)
+# ==========================================
 networks:
   ansible_net:
     driver: bridge
+    ipam:
+      config:
+        - subnet: 172.28.0.0/16
