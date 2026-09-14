@@ -1,0 +1,5 @@
+# Mengabaikan folder data internal dan cache InvenTree
+inventree/data/
+inventree/.env
+*.rdb
+*.db

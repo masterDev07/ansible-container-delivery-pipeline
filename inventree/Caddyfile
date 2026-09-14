@@ -1,0 +1,25 @@
+# Konfigurasi Caddy untuk menjembatani browser ke kontainer inventree-server
+:5234 {
+    # Peta file statis (CSS/JS) dan media upload agar langsung dibaca dari volume
+    root * /var/www
+    file_server
+
+    # Mengarahkan request file statis ke internal folder kontainer
+    handle_path /static/* {
+        root * /var/www/static
+        file_server
+    }
+
+    handle_path /media/* {
+        root * /var/www/media
+        file_server
+    }
+
+    # Mengarahkan sisa traffic lainnya langsung ke server Django InvenTree
+    handle {
+        reverse_proxy inventree-server:8000
+    }
+
+    # Optimasi kompresi data
+    encode gzip zstd
+}

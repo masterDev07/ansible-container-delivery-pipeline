@@ -1,0 +1,65 @@
+version: "3.8"
+
+services:
+  # 1. Database Backend
+  inventree-db:
+    image: postgres:15-alpine
+    container_name: inventree-db
+    restart: always
+    volumes:
+      - ${INVENTREE_EXT_VOLUME}/db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=${INVENTREE_DB_NAME}
+      - POSTGRES_USER=${INVENTREE_DB_USER}
+      - POSTGRES_PASSWORD=${INVENTREE_DB_PASSWORD}
+
+  # 2. Cache / Task Queue (Redis)
+  inventree-cache:
+    image: redis:7-alpine
+    container_name: inventree-cache
+    restart: always
+    volumes:
+      - ${INVENTREE_EXT_VOLUME}/cache:/data
+
+  # 3. Server Utama Aplikasi
+  inventree-server:
+    image: inventree/inventree:stable
+    container_name: inventree-server
+    restart: always
+    depends_on:
+      - inventree-db
+      - inventree-cache
+    volumes:
+      - ${INVENTREE_EXT_VOLUME}:/home/inventree/data
+    env_file:
+      - .env
+
+  # 4. Background Worker (Memproses tugas di latar belakang)
+  inventree-worker:
+    image: inventree/inventree:stable
+    container_name: inventree-worker
+    restart: always
+    command: invoke cluster  # <--- UBAH DI SINI
+    depends_on:
+      - inventree-server
+    volumes:
+      - ${INVENTREE_EXT_VOLUME}:/home/inventree/data
+    env_file:
+      - .env
+
+
+  # 5. Reverse Proxy (Caddy) - Penerima Traffic Browser
+  inventree-proxy:
+    image: caddy:2-alpine
+    container_name: inventree-proxy
+    restart: always
+    depends_on:
+      - inventree-server
+    ports:
+      - "5234:5234" # Jalur akses eksternal (port 5234)
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile
+      - ${INVENTREE_EXT_VOLUME}/proxy/data:/data
+      - ${INVENTREE_EXT_VOLUME}/proxy/config:/config
+      - ${INVENTREE_EXT_VOLUME}/static:/var/www/static
+      - ${INVENTREE_EXT_VOLUME}/media:/var/www/media
