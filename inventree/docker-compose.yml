@@ -1,4 +1,4 @@
-version: "3.8"
+# version: "3.8"
 
 services:
   # 1. Database Backend
@@ -12,6 +12,8 @@ services:
       - POSTGRES_DB=${INVENTREE_DB_NAME}
       - POSTGRES_USER=${INVENTREE_DB_USER}
       - POSTGRES_PASSWORD=${INVENTREE_DB_PASSWORD}
+    ports:
+      - "5432:5432"
 
   # 2. Cache / Task Queue (Redis)
   inventree-cache:
@@ -33,13 +35,15 @@ services:
       - ${INVENTREE_EXT_VOLUME}:/home/inventree/data
     env_file:
       - .env
+    environment:
+      - INVENTREE_FRONTEND_SETTINGS={"mobile_mode":"allow-always"}
 
   # 4. Background Worker (Memproses tugas di latar belakang)
   inventree-worker:
     image: inventree/inventree:stable
     container_name: inventree-worker
     restart: always
-    command: invoke cluster  # <--- UBAH DI SINI
+    command: invoke worker  # <--- UBAH DI SINI
     depends_on:
       - inventree-server
     volumes:

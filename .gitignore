@@ -3,3 +3,4 @@ inventree/data/
 inventree/.env
 *.rdb
 *.db
+inventree/skrip_custom_invtree/
