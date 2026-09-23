@@ -2,7 +2,7 @@
 
 ### Problematic
 
-I have problem with my minipc time. Every I turn on my minipc got wrong time because dead of computer CMOS battery. I cannot browsing with my lovely Firefox browser. So with my programming skill. I have been challanged to solve this problem with programming. A Fact i cannot solve this problem with one step but more than that.
+I have problem with my minipc time. Every I turn on my minipc got failure time because dead of computer CMOS battery. I cannot browsing with my lovely Firefox browser. So with my programming skill. I have been challanged to solve this problem with programming. A Fact i cannot solve this problem with one step but more than that.
 
 ### Evolution Problem Solving
 1. Create Python script to syncronizing from  Linux Mint to my android device / Termux app
