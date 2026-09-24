@@ -21,3 +21,70 @@ I have problem with my minipc time. Every I turn on my minipc got failure time b
 ![Demonstration](video_and_images/demo_automated_clock_synchronization.mp4)
 
 
+### Other Architectur Server InvenTree Implementation Using Container Docker
+
+```text
+
+       [ PENGGUNA / CLIENT ]
+                 │
+                 ▼ (Port 8080)
+┌─────────────────────────────────────────┐
+│          inventree-proxy-pos            │
+│               (Caddy)                   │
+└──────────────────┬──────────────────────┘
+                   │
+                   ├───────────────────────────────────┐
+                   ▼ (Port 8000)                       ▼ (Read Static Files)
+┌─────────────────────────────────────────┐ ┌───────────────────────────────────┐
+│          inventree-server-pos           │ │        inventree_data_pos         │
+│          (Web Utama: Gunicorn)          │ │         (Shared Volume)           │
+└──────────┬──────────────────┬───────────┘ └───────────────▲───────────────────┘
+           │                  │                             │ (Media/Static)
+           │                  │                             │
+           ▼                  ▼                             ▼
+┌────────────────────┐ ┌────────────────────┐ ┌───────────────────────────────────┐
+│  inventree-db-pos  │ │inventree-cache-pos │ │       inventree-worker-pos        │
+│    (PostgreSQL)    │ │      (Redis)       │ │        (Background Worker)        │
+└──────────┬─────────┘ └────────────────────┘ └─────────────┬─────────────────────┘
+           │                                                │
+           ▼                                                ▼
+┌────────────────────┐                            ┌────────────────────┐
+│inventree_db_data_..│                            │ inventree-db-pos   │
+│  (Volume Data DB)  │                            │ inventree-cache-pos│
+└────────────────────┘                            └────────────────────┘
+
+
+┌────────────────────────────────────────────────────────────────────────┐
+│ [ SERVER FISIK / VPS / HOST OS ]                                       │
+│                                                                        │
+│ ┌────────────────────────────────────────────────────────────────────┐ │
+│ │ DOCKER ENGINE / RUNTIME                                            │ │
+│ │                                                                    │ │
+│ │  ┌──────────────────────────────────────────────────────────────┐  │ │
+│ │  │ DOCKER NETWORK (Internal Internal Bridge)                    │  │ │
+│ │  │                                                              │  │ │
+│ │  │  ┌──────────────────────┐          ┌──────────────────────┐  │  │ │
+│ │  │  │ [CONTAINER 1]        │          │ [CONTAINER 2]        │  │  │ |
+│ │  │  │ inventree-proxy-pos  ├─────────►│ inventree-server-pos │  │  │ │
+│ │  │  │ (Image: caddy)       │ (Proxy)  │ (Image: inventree)   │  │  │ │
+│ │  │  └──────────┬───────────┘          └────┬─────────────┬───┘  │  │ │
+│ │  │             │                           │             │      │  │ │
+│ │  │             │ (Read Static)             │ (SQL)       │(Cache)  │ │
+│ │  │             ▼                           ▼             ▼      │  │ │
+│ │  │  ┌──────────────────────┐          ┌──────────┐ ┌──────────┐ │  │ │
+│ │  │  │ [CONTAINER 3]        │          │CONTAINER4│ │CONTAINER5│ │  │ │
+│ │  │  │ inventree-worker-pos │          │inventree-│ │inventree-│ │  │ │
+│ │  │  │ (Image: inventree)   │          │db-pos    │ │cache-pos │ │  │ │
+│ │  │  └──────────┬───────────┘          │(Postgres)│ │(Redis)   │ │  │ │
+│ │  │             │                      └─────────┬┘ └─────────┬┘ │  │ │
+│ │  └─────────────┼────────────────────────────────┼────────────┼──┘  │ │
+│ │                │                                │            │     │ │
+│ │                ▼ (Mount Volume)  (Mount Volume) ▼            ▼     │ │
+│ │  ┌──────────────────────────────┐     ┌──────────────────────────┐ │ │
+│ │  │ DOCKER VOLUMES (Di Host OS)  │     │ DOCKER VOLUMES (Di Host) │ │ │
+│ │  │ inventree_data_pos           │     │ inventree_db_data_pos    │ │ │
+│ │  └──────────────────────────────┘     └──────────────────────────┘ │ │
+│ └────────────────────────────────────────────────────────────────────┘ │
+└────────────────────────────────────────────────────────────────────────┘
+
+```
