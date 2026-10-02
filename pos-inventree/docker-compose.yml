@@ -1,0 +1,79 @@
+services:
+  # Database Server
+  inventree-db-pos:
+    image: postgres:15-alpine
+    container_name: inventree-db-pos
+    environment:
+      - POSTGRES_DB=${INVENTREE_DB_NAME:-inventree_pos}
+      - POSTGRES_USER=${INVENTREE_DB_USER:-inventree_pos}
+      - POSTGRES_PASSWORD=${INVENTREE_DB_PASSWORD:-inventree_pos}
+    volumes:
+      - inventree_db_data_pos:/var/lib/postgresql/data
+    restart: "no"
+
+  # Cache / Message Broker
+  inventree-cache-pos:
+    image: redis:7-alpine
+    container_name: inventree-cache-pos
+    restart: "no"
+
+  # Web Server Utama (Menggunakan Gunicorn & Lewati PIP)
+  inventree-server-pos:
+    image: inventree/inventree:stable
+    container_name: inventree-server-pos
+    environment:
+      - INVENTREE_SKIP_PIP=true
+    # --- PERBAIKAN COMMAND MANUAL GUNICORN ---
+    # Kita arahkan langsung chdir ke lokasi source backend-nya
+    command: gunicorn InvenTree.wsgi:application --bind 0.0.0.0:8000 --chdir /home/inventree/src/backend/InvenTree --workers 4 --threads 2
+    # ----------------------------------------
+    expose:
+      - "8000"
+    depends_on:
+      - inventree-db-pos
+      - inventree-cache-pos
+    env_file:
+      - .env
+    volumes:
+      - inventree_data_pos:/home/inventree/data
+    restart: "no"
+
+
+
+  # Background Worker
+  inventree-worker-pos:
+    image: inventree/inventree:stable
+    container_name: inventree-worker-pos
+    environment:
+      - INVENTREE_SKIP_PIP=true
+    command: invoke worker
+    depends_on:
+      - inventree-db-pos
+      - inventree-cache-pos
+    env_file:
+      - .env
+    volumes:
+      - inventree_data_pos:/home/inventree/data
+    restart: "no"
+
+  # Reverse Proxy & Static File Server
+  inventree-proxy-pos:
+    image: caddy:2-alpine
+    container_name: inventree-proxy-pos
+    user: "0:0"
+    restart: "no"
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - inventree_data_pos:/var/www:ro
+      - caddy_data_pos:/data
+      - caddy_config_pos:/config
+    depends_on:
+      - inventree-server-pos
+
+volumes:
+  inventree_db_data_pos:
+  inventree_data_pos:
+  caddy_data_pos:
+  caddy_config_pos:

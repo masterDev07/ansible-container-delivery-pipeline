@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Form Pengembalian Sisa Material</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 15mm;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            color: #333;
+            font-size: 11pt;
+            line-height: 1.4;
+        }
+        .header-table {
+            width: 100%;
+            border-bottom: 2px solid #a30000;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .title {
+            font-size: 16pt;
+            font-weight: bold;
+            text-transform: uppercase;
+            color: #a30000;
+        }
+        .info-table {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        .info-table td {
+            padding: 4px 0;
+            vertical-align: top;
+        }
+        .qr-section {
+            text-align: right;
+            vertical-align: middle;
+        }
+        .qr-image {
+            width: 90px;
+            height: 90px;
+        }
+        .content-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+        .content-table th {
+            background-color: #f2f2f2;
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+            font-size: 10pt;
+            text-transform: uppercase;
+        }
+        .content-table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            vertical-align: top;
+            font-size: 10.5pt;
+        }
+        .catatan-box {
+            border: 1px dashed #666;
+            padding: 15px;
+            margin-bottom: 40px;
+            background-color: #fafafa;
+        }
+        .ttd-table {
+            width: 100%;
+            margin-top: 50px;
+        }
+        .ttd-table td {
+            text-align: center;
+            width: 50%;
+            padding-bottom: 60px;
+        }
+        /* Style Kotak Nomor Serial */
+        .sn-badge {
+            font-family: monospace;
+            font-size: 9.5pt;
+            background-color: #fff0f0;
+            color: #d11a2a;
+            padding: 2px 6px;
+            border: 1px solid #f9cbce;
+            border-radius: 3px;
+            display: inline-block;
+            margin-top: 4px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER DOKUMEN -->
+    <table class="header-table">
+        <tr>
+            <td>
+                <div class="title">Form Pengembalian Sisa Material</div>
+                <div style="font-size: 10pt; color: #666;">RETUR MATERIAL LAPANGAN (OUTBOUND RETURN)</div>
+            </td>
+            <td style="text-align: right; font-size: 10pt; color: #555; vertical-align: bottom;">
+                Tanggal Retur: <strong>Sept. 22, 2026</strong>
+            </td>
+        </tr>
+    </table>
+
+    <!-- INFO TRANSAKSI RETUR -->
+    <table class="info-table">
+        <tr>
+            <td style="width: 25%;"><strong>Gudang Penerima</strong></td>
+            <td style="width: 45%;">: <strong>Zone C - High-Value Assets</strong></td>
+            <td rowspan="3" class="qr-section">
+                <img src="https://googleapis.com4&choe=UTF-8" class="qr-image" alt="QR Code">
+                <div style="font-size: 7pt; color: #666; text-align: right; margin-top: 4px;">Pindai Lokasi Gudang</div>
+            </td>
+        </tr>
+        <tr>
+            <td><strong>Path Lokasi</strong></td>
+            <td>: Semarang Warehouse/Zone C - High-Value Assets</td>
+        </tr>
+        <tr>
+            <td><strong>Keterangan</strong></td>
+            <td>: Pengembalian sisa proyek / barang klaim rusak oleh teknisi</td>
+        </tr>
+    </table>
+
+    <!-- TABEL DATA MATERIAL YANG DIKEMBALIKAN -->
+    <table class="content-table">
+        <thead>
+            <tr>
+                <th style="width: 45%;">Nama Material / Kabel</th>
+                <th style="width: 20%; text-align: center;">Qty Kembali</th>
+                <th style="width: 35%;">Kondisi Barang</th>
+            </tr>
+        </thead>
+        <tbody>
+            
+            <tr>
+                <td colspan="3" style="text-align: center; color: #999; padding: 20px;">
+                    Belum ada material yang dipindahkan ke lokasi retur ini.<br>
+                    <small>Silakan lakukan transfer stok (Move Stock) dari mobil teknisi ke gudang utama terlebih dahulu.</small>
+                </td>
+            </tr>
+            
+        </tbody>
+    </table>
+
+    <!-- CATATAN VALIDASI GUDANG -->
+    <div class="catatan-box">
+        <strong style="font-size: 10pt; text-transform: uppercase;">Berita Acara & Catatan Pemeriksaan Fisik:</strong>
+        <p style="font-size: 9.5pt; margin-top: 5px; color: #444;">
+            * Untuk kabel drop core, sisa potongan roll telah diukur kembali dan dicocokkan dengan meteran luar.<br>
+            Catatan Tambahan: ..........................................................................................................................................<br>
+            ................────────────────────────────────────────────────────────────────..........................................................
+        </p>
+    </div>
+
+    <!-- KOLOM TANDA TANGAN -->
+    <table class="ttd-table">
+        <tr>
+            <td>
+                <div>Diserahkan Oleh (Teknisi),</div>
+                <div style="margin-top: 60px;">( ________________________ )</div>
+                <div style="font-size: 9pt; color: #666; margin-top: 5px;">Kepala Teknisi / Tim Lapangan</div>
+            </td>
+            <td>
+                <div>Diterima & Diverifikasi (Logistik),</div>
+                <div style="margin-top: 60px;">( ________________________ )</div>
+                <div style="font-size: 9pt; color: #666; margin-top: 5px;">Admin Gudang</div>
+            </td>
+        </tr>
+    </table>
+
+</body>
+</html>

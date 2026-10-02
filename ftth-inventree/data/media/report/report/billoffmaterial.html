@@ -1,0 +1,277 @@
+{% extends "report/inventree_report_base.html" %}
+
+{% load i18n %}
+{% load report %}
+{% load barcode %}
+{% load inventree_extras %}
+
+{% block page_margin %}
+margin: 1.5cm;
+margin-top: 3.5cm;
+margin-bottom: 2cm;
+{% endblock page_margin %}
+
+{% block bottom_left %}
+content: "v{{ report_revision }} - {% format_date date %}";
+{% endblock bottom_left %}
+
+{% block bottom_center %}
+content: "{% inventree_version shortstring=True %}";
+{% endblock bottom_center %}
+
+{% block style %}
+body {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    color: #333;
+}
+
+.header-right {
+    text-align: right;
+    float: right;
+}
+
+.logo {
+    max-height: 45px;
+    vertical-align: middle;
+}
+
+.overview-container {
+    width: 100%;
+    margin-top: 10px;
+    margin-bottom: 25px;
+    border-top: 2px solid #333;
+    border-bottom: 2px solid #333;
+    padding: 10px 0;
+}
+
+.overview-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.overview-table td {
+    padding: 4px 8px;
+    font-size: 90%;
+    vertical-align: top;
+}
+
+.overview-table td.label {
+    font-weight: bold;
+    color: #555;
+    width: 18%;
+}
+
+.overview-table td.value {
+    width: 32%;
+}
+
+.bom-title {
+    font-size: 110%;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 8px;
+    border-bottom: 1px solid #111;
+    padding-bottom: 3px;
+}
+
+table.bom-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 85%;
+    margin-bottom: 15px;
+}
+
+table.bom-table th {
+    background-color: #f5f5f5;
+    border-top: 1px solid #111;
+    border-bottom: 2px solid #111;
+    padding: 8px 6px;
+    font-weight: bold;
+    text-align: left;
+}
+
+table.bom-table td {
+    border-bottom: 1px solid #eee;
+    padding: 6px 6px;
+    vertical-align: middle;
+}
+
+.text-right {
+    text-align: right;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.summary-wrapper {
+    float: right;
+    width: 48%;
+    margin-top: 10px;
+    margin-bottom: 30px;
+}
+
+table.summary-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 85%;
+}
+
+table.summary-table td {
+    padding: 5px 6px;
+    border: none;
+}
+
+table.summary-table tr.total-row td {
+    border-top: 1px solid #111;
+    border-bottom: 3px double #111;
+    font-weight: bold;
+    font-size: 105%;
+}
+
+.notes-section {
+    clear: both;
+    margin-top: 20px;
+    font-size: 80%;
+    color: #555;
+    border: 1px dashed #ccc;
+    padding: 10px;
+    background-color: #fafafa;
+}
+
+.signature-container {
+    margin-top: 40px;
+    width: 100%;
+}
+
+.signature-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.signature-table td {
+    width: 50%;
+    font-size: 85%;
+    padding-top: 50px;
+}
+
+.signature-line {
+    width: 80%;
+    border-top: 1px solid #333;
+    padding-top: 5px;
+}
+{% endblock style %}
+
+{% block header_content %}
+    <img class='logo' src='{% logo_image %}' alt="Company Logo">
+    <div class='header-right'>
+        <h2 style="margin:0; letter-spacing: 1px;">BILL OF MATERIALS REPORT</h2>
+        <span style="font-size: 80%; color: #666;">Date Generated: {% format_date date %} | Currency: USD (&#36;)</span>
+    </div>
+{% endblock header_content %}
+
+{% block page_content %}
+
+<div class="overview-container">
+    <table class="overview-table">
+        <tr>
+            <td class="label">Project Name:</td>
+            <td class="value"><strong>{{ part.full_name }}</strong></td>
+            <td class="label">Total BOM Cost:</td>
+            <td class="value"><strong>&#36; {{ part.pricing.price_range|default:"-" }}</strong></td>
+        </tr>
+        <tr>
+            <td class="label">Product SKU:</td>
+            <td class="value">{{ part.IPN|default:"-" }}</td>
+            <td class="label">Target Quantity:</td>
+            <td class="value">1,000 Units (Est.)</td>
+        </tr>
+        <tr>
+            <td class="label">Prepared By:</td>
+            <td class="value">Engineering & Mfg Team</td>
+            <td class="label">Unit Cost:</td>
+            <td class="value"><strong>&#36; {{ part.pricing.price_range|default:"-" }}</strong></td>
+        </tr>
+    </table>
+</div>
+
+<div class="bom-title">BOM Structure & Cost Analysis</div>
+<table class='bom-table'>
+    <thead>
+        <tr>
+            <th style="width: 5%;" class="text-center">#</th>
+            <th style="width: 18%;">Part Number</th>
+            <th style="width: 32%;">Description</th>
+            <th style="width: 8%;" class="text-center">Qty</th>
+            <th style="width: 8%;" class="text-center">Unit</th>
+            <th style="width: 11%;" class="text-right">Unit Price</th>
+            <th style="width: 11%;" class="text-right">Total Price</th>
+            <th style="width: 7%;" class="text-center">MPN</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for line in bom_items.all %}
+        <tr>
+            <td class="text-center" style="color: #888;">{{ forloop.counter }}</td>
+            <td><strong>{{ line.sub_part.IPN|default:line.sub_part.name }}</strong></td>
+            <td>{{ line.sub_part.description }}</td>
+            <td class="text-center">{% decimal line.quantity %}</td>
+            <td class="text-center">{{ line.sub_part.units|default:"pcs" }}</td>
+            <td class="text-right">
+                &#36; {{ line.sub_part.pricing.price_range|default:"0.00" }}
+            </td>
+            <td class="text-right">
+                &#36; --
+            </td>
+            <td class="text-center" style="font-size: 85%; color: #555;">{{ line.reference|default:"-" }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<div class="summary-wrapper">
+    <table class="summary-table">
+        <tr>
+            <td style="width: 55%;">TOTAL BASE MATERIAL:</td>
+            <td class="text-right">&#36; {{ part.pricing.price_range|default:"0.00" }}</td>
+        </tr>
+        <tr>
+            <td>EST. SCRAP/LOSS (2%):</td>
+            <td class="text-right" style="color: #777;">Calculated at Mfg</td>
+        </tr>
+        <tr class="total-row">
+            <td>FINAL UNIT COST:</td>
+            <td class="text-right">&#36; {{ part.pricing.price_range|default:"0.00" }}</td>
+        </tr>
+    </table>
+</div>
+
+<div class="notes-section">
+    <strong>MANUFACTURING & COMPLIANCE NOTES:</strong>
+    <ul style="margin: 5px 0 0 15px; padding: 0;">
+        <li>* Lead Time Estimate : 4-6 Weeks for production batch.</li>
+        <li>* Compliance         : All parts selected are RoHS and CE compliant.</li>
+        <li>* Critical Risks     : Component rolling lead times apply; alternative MPN lists approved.</li>
+    </ul>
+</div>
+
+<div class="signature-container">
+    <table class="signature-table">
+        <tr>
+            <td>
+                <div class="signature-line">
+                    <strong>Prepared By:</strong><br>
+                    <span style="color: #666; font-size: 90%;">Engineering Lead</span>
+                </div>
+            </td>
+            <td>
+                <div class="signature-line">
+                    <strong>Approved By:</strong><br>
+                    <span style="color: #666; font-size: 90%;">Project Owner / HK HQ</span>
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+
+{% endblock page_content %}

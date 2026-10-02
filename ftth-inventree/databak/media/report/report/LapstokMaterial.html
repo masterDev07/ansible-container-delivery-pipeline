@@ -1,0 +1,244 @@
+{% extends "report/inventree_report_base.html" %}
+
+{% load i18n %}
+{% load report %}
+{% load inventree_extras %}
+
+{% block style %}
+/* Global Industrial Theme Styling */
+body {
+    font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    color: #333333;
+    font-size: 10pt;
+    line-height: 1.4;
+}
+
+/* Header & Footer Customization */
+{% block bottom_left %} content: "{% format_date date %}"; {% endblock bottom_left %}
+{% block bottom_center %} content: "InvenTree {% inventree_version shortstring=True %}"; {% endblock bottom_center %}
+{% block top_center %} content: "{% trans 'Stock Item Report' %}"; {% endblock top_center %}
+
+/* Layout & Containers */
+.report-wrapper {
+    margin-bottom: 25px;
+    page-break-inside: avoid;
+}
+
+.industrial-card {
+    display: table;
+    width: 100%;
+    border: 1px solid #1a252f; /* Dark steel border */
+    border-collapse: collapse;
+    background-color: #ffffff;
+    margin-bottom: 15px;
+}
+
+.card-body {
+    display: table-row;
+}
+
+.text-left-panel {
+    display: table-cell;
+    width: 65%;
+    padding: 15px;
+    vertical-align: top;
+}
+
+.img-right-panel {
+    display: table-cell;
+    width: 35%;
+    padding: 15px;
+    vertical-align: top;
+    text-align: center;
+    border-left: 1px solid #e0e0e0;
+    background-color: #f8f9fa;
+}
+
+/* Typography */
+.part-title {
+    font-size: 16pt;
+    font-weight: 700;
+    color: #1a252f;
+    margin: 0 0 5px 0;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.part-desc {
+    font-size: 9.5pt;
+    color: #555555;
+    margin: 0 0 15px 0;
+}
+
+/* Meta Data Grid */
+.meta-grid {
+    width: 100%;
+    margin-top: 10px;
+}
+
+.meta-label {
+    font-size: 8pt;
+    text-transform: uppercase;
+    color: #7f8c8d;
+    font-weight: bold;
+    padding-bottom: 2px;
+}
+
+.meta-value {
+    font-size: 10pt;
+    font-weight: 600;
+    color: #2c3e50;
+    padding-bottom: 8px;
+}
+
+/* Images & Status badges */
+.part-img {
+    max-height: 3.5cm;
+    max-width: 100%;
+    object-fit: contain;
+    margin-bottom: 12px;
+}
+
+.qty-badge {
+    background-color: #1a252f;
+    color: #ffffff;
+    padding: 6px 10px;
+    font-size: 11pt;
+    font-weight: bold;
+    display: inline-block;
+    border-radius: 0px; /* Sharp industrial corners */
+    text-transform: uppercase;
+    width: 90%;
+}
+
+/* Industrial Tables */
+.section-title {
+    font-size: 11pt;
+    font-weight: bold;
+    color: #1a252f;
+    text-transform: uppercase;
+    border-bottom: 2px solid #1a252f;
+    padding-bottom: 4px;
+    margin: 20px 0 8px 0;
+    letter-spacing: 0.5px;
+}
+
+.industrial-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 30px;
+}
+
+.industrial-table th {
+    background-color: #2c3e50;
+    color: #ffffff;
+    text-align: left;
+    padding: 6px 10px;
+    font-size: 8.5pt;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+.industrial-table td {
+    padding: 8px 10px;
+    border-bottom: 1px solid #e0e0e0;
+    font-size: 9.5pt;
+    vertical-align: middle;
+}
+
+.industrial-table tr:nth-child(even) td {
+    background-color: #f8f9fa;
+}
+
+.table-part-img {
+    max-width: 28px;
+    max-height: 28px;
+    vertical-align: middle;
+    margin-right: 8px;
+    border: 1px solid #d1d8e0;
+}
+
+/* Test Status Colors (Unused but kept for your future logic) */
+.test-pass { color: #27ae60; font-weight: bold; }
+.test-fail { color: #c0392b; font-weight: bold; }
+{% endblock style %}
+
+{% block pre_page_content %}
+{% endblock pre_page_content %}
+
+{% block page_content %}
+{% for item in instances %}
+<div class="report-wrapper">
+    
+    <!-- Main Item Card -->
+    <div class="industrial-card">
+        <div class="card-body">
+            
+            <!-- Left Info Panel -->
+            <div class="text-left-panel">
+                <h2 class="part-title">{{ item.part.full_name }}</h2>
+                <p class="part-desc">{{ item.part.description|default:"--- No description provided ---" }}</p>
+                
+                <table class="meta-grid">
+                    <tr>
+                        <td class="meta-label">{% trans "Location" %}</td>
+                        <td class="meta-label">{% trans "Stock Item ID" %}</td>
+                    </tr>
+                    <tr>
+                        <td class="meta-value">{{ item.stock_item.location|default:"Unknown Location" }}</td>
+                        <td class="meta-value">#{{ item.stock_item.pk }}</td>
+                    </tr>
+                </table>
+            </div>
+            
+            <!-- Right Visual Panel -->
+            <div class="img-right-panel">
+                <img class="part-img" alt='{% trans "Part image" %}' src="{% part_image item.part height=480 %}">
+                <div class="qty-badge">
+                    {% if item.stock_item.is_serialized %}
+                        SN: {{ item.stock_item.serial }}
+                    {% else %}
+                        QTY: {% decimal item.stock_item.quantity %}
+                    {% endif %}
+                </div>
+            </div>
+            
+        </div>
+    </div>
+
+    <!-- Installed Sub-Items (BOM / Child Items) -->
+    {% if item.installed_items|length > 0 %}
+    <h3 class="section-title">{% trans "Installed Components" %}</h3>
+    <table class="industrial-table">
+        <thead>
+            <tr>
+                <th style="width: 65%;">{% trans "Component Part Name" %}</th>
+                <th style="width: 35%;">{% trans "Traceability / Quantity" %}</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for sub_item in item.installed_items %}
+            <tr>
+                <td>
+                    <img src="{% part_image sub_item.part height=240 %}" class="table-part-img" alt="Part">
+                    <strong>{{ sub_item.part.full_name }}</strong>
+                </td>
+                <td>
+                    {% if sub_item.serialized %}
+                        <span style="color: #2c3e50;">{% trans "Serial" %}: <strong>{{ sub_item.serial }}</strong></span>
+                    {% else %}
+                        {% trans "Qty" %}: <strong>{% decimal sub_item.quantity %}</strong>
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    {% endif %}
+
+</div>
+{% endfor %}
+{% endblock page_content %}
+
+{% block post_page_content %}
+{% endblock post_page_content %}

@@ -1,0 +1,240 @@
+
+
+<head>
+    <style>
+        @page {
+            
+            
+            size: A4;
+            
+            
+margin: 2cm;
+margin-top: 4cm;
+
+            font-family: Arial, Helvetica, sans-serif;
+            font-size: 75%;
+            
+
+            @top-left {
+                
+                
+            }
+
+            @top-center {
+                
+                
+            }
+
+            @top-right {
+                
+                
+            }
+
+            @bottom-left {
+                
+content: "v - Sep 22, 2026";
+
+            }
+
+            @bottom-center {
+                
+                
+            }
+
+            @bottom-right {
+                
+                content: "Page " counter(page) " of " counter(pages);
+                
+            }
+        }
+
+        body {
+            
+            font-family: Arial, Helvetica, sans-serif;
+            
+        }
+
+        .header {
+            
+            top: 0px;
+            left: 0px;
+            position: fixed;
+            width: 100%;
+            margin-top: -2.5cm;
+            
+        }
+
+        .content {
+            
+            width: 100%;
+            page-break-inside: auto;
+            position: relative;
+            
+        }
+
+        .footer {
+            
+            bottom: 0px;
+            left: 0px;
+            position: fixed;
+            width: 100%;
+            margin-bottom: -20mm;
+            
+        }
+
+        
+
+.header-right {
+    text-align: right;
+    float: right;
+}
+
+.logo {
+    height: 20mm;
+    vertical-align: middle;
+}
+
+.part-image {
+    border: 1px solid;
+    border-radius: 2px;
+    vertical-align: middle;
+    height: 40mm;
+    width: 100%;
+    display: inline-block;
+    z-index: 100;
+}
+
+.details-image {
+    float: right;
+    width: 30%;
+}
+
+.details {
+    width: 100%;
+    border: 1px solid;
+    border-radius: 3px;
+    padding: 5px;
+    min-height: 42mm;
+}
+
+.details table {
+    overflow-wrap: break-word;
+    word-wrap: break-word;
+    width: 65%;
+    table-layout: fixed;
+    font-size: 75%;
+}
+
+.details table td:not(:last-child){
+    white-space: nowrap;
+}
+
+.details table td:last-child{
+    width: 50%;
+    padding-left: 1cm;
+    padding-right: 1cm;
+}
+
+.details-table td {
+    padding-left: 10px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    border-bottom: 1px solid #555;
+}
+
+
+
+    </style>
+</head>
+
+<body>
+
+    <div class='header'>
+        
+    <img class='logo' src="/static/img/inventree.png" alt="logo" width="150">
+
+    <div class='header-right'>
+        <h3>
+            Build Order BO-0004
+        </h3>
+        <small>1 x IR-STD | INSTALASI-RUMAH-STD</small>
+        <br>
+    </div>
+
+    <hr>
+
+    </div>
+
+    <div class='content'>
+        
+
+<div class='details'>
+    <div class='details-image'>
+        <img class='part-image' alt="Part image" src="/static/img/blank_image.png">
+    </div>
+
+    <div class='details-container'>
+
+        <table class='details-table'>
+            <tr>
+                <th>Build Order</th>
+                <td><a href="https://192.168.43.165:5234/web/manufacturing/build-order/4">BO-0004</a></td>
+            </tr>
+            <tr>
+                <th>Part</th>
+                <td><a href="https://192.168.43.165:5234/web/part/35">IR-STD | INSTALASI-RUMAH-STD</a></td>
+            </tr>
+            <tr>
+                <th>Quantity</th>
+                <td>1</td>
+            </tr>
+            <tr>
+                <th>Description</th>
+                <td></td>
+            </tr>
+            <tr>
+                <th>Issued</th>
+                <td>Sep 22, 2026</td>
+            </tr>
+            <tr>
+                <th>Target Date</th>
+                <td>
+                    
+                    <em>Not specified</em>
+                    
+                </td>
+            </tr>
+            <tr>
+                <th>Sales Order</th>
+                <td>
+                    
+                    <a href="https://192.168.43.165:5234/web/sales/sales-order/4">SO-0004 - Eko</a>
+                    
+                </td>
+            </tr>
+            
+            
+            <tr>
+                <th>Issued By</th>
+                <td>ENDRO MEI ASMORO</td>
+            </tr>
+            
+            
+            
+        </table>
+    </div>
+</div>
+
+<h3>Notes</h3>
+
+
+
+
+    </div>
+
+    <div class='footer'>
+        
+        
+    </div>
+
+</body>

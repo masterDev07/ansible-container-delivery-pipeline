@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+        /* Ukuran kertas diubah menjadi 80mm panjang ke bawah seperti struk supermarket */
+        @page { size: 80mm 150mm; margin: 0; }
+        body { font-family: 'Courier New', monospace; width: 75mm; font-size: 11px; padding: 5px; }
+        .header { text-align: center; border-bottom: 1px dashed #000; padding-bottom: 5px; }
+        .title { font-weight: bold; font-size: 13px; }
+        .info { margin: 8px 0; line-height: 1.3; }
+        .item-box { border-bottom: 1px dashed #000; padding-bottom: 8px; margin-bottom: 8px; }
+        .footer { text-align: center; font-size: 9px; margin-top: 10px; }
+        .sign { display: flex; justify-content: space-between; margin-top: 25px; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <span class="title">BON PINJAM ALAT KERJA</span><br>
+        <span>GUDANG FIBER OPTIK</span>
+    </div>
+    
+    <div class="info">
+        Tanggal: {% now "Y-m-d H:i" %}<br>
+        Status : DIBAWA LAPANGAN
+    </div>
+    
+    <div class="item-box">
+        <strong>[ DETAIL ASET ]</strong><br>
+        Barang : {{ item.part.name }}<br>
+        Kode IPN: {{ item.part.IPN }}<br>
+        S/N    : {{ item.serial }}<br>
+        Posisi : {{ item.location.name }}
+    </div>
+    
+    <div class="sign">
+        <div>[Teknisi]</div>
+        <div>[Gudang]</div>
+    </div>
+    <br><br>
+    <div class="sign">
+        <div>(________)</div>
+        <div>( ENDRO MEI ASMORO )</div>
+    </div>
+
+    <div class="footer">
+        * Harap dikembalikan setelah selesai proyek.<br>
+        Terima kasih.
+    </div>
+</body>
+</html>

@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>BAST Material Masuk PO-{{ order.reference }}</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 15mm;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            color: #333;
+            font-size: 11pt;
+            line-height: 1.4;
+        }
+        .header-table {
+            width: 100%;
+            border-bottom: 2px solid #333;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .title {
+            font-size: 16pt;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .info-table {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        .info-table td {
+            padding: 4px 0;
+            vertical-align: top;
+        }
+        .qr-section {
+            text-align: right;
+            vertical-align: middle;
+        }
+        .qr-image {
+            width: 90px;
+            height: 90px;
+        }
+        .content-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+        .content-table th {
+            background-color: #f2f2f2;
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+            font-size: 10pt;
+            text-transform: uppercase;
+        }
+        .content-table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            vertical-align: top;
+            font-size: 10.5pt;
+        }
+        .catatan-box {
+            border: 1px dashed #666;
+            padding: 15px;
+            margin-bottom: 40px;
+            background-color: #fafafa;
+        }
+        .ttd-table {
+            width: 100%;
+            margin-top: 50px;
+        }
+        .ttd-table td {
+            text-align: center;
+            width: 50%;
+            padding-bottom: 60px;
+        }
+        .sn-list {
+            font-family: monospace;
+            font-size: 8.5pt;
+            color: #555;
+            margin-top: 4px;
+            word-break: break-all;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER DOKUMEN -->
+    <table class="header-table">
+        <tr>
+            <td>
+                <div class="title">Berita Acara Serah Terima (BAST)</div>
+                <div style="font-size: 10pt; color: #666;">MATERIAL MASUK (INBOUND RECEIPT)</div>
+            </td>
+            <td style="text-align: right; font-size: 10pt; color: #555; vertical-align: bottom;">
+                Tanggal: <strong>{{ date }}</strong>
+            </td>
+        </tr>
+    </table>
+
+    <!-- INFO TRANSAKSI & QR CODE -->
+    <table class="info-table">
+        <tr>
+            <td style="width: 25%;"><strong>No. Purchase Order</strong></td>
+            <td style="width: 45%;">: <strong>{{ order.reference }}</strong></td>
+            <td rowspan="3" class="qr-section">
+                <!-- QR Code otomatis mengarah ke ID Purchase Order -->
+                <img src="https://googleapis.com{{ order.id }}&choe=UTF-8" class="qr-image" alt="QR Code">
+                <div style="font-size: 7pt; color: #666; text-align: right; margin-top: 4px;">Pindai untuk cek sistem</div>
+            </td>
+        </tr>
+        <tr>
+            <td><strong>Supplier / Vendor</strong></td>
+            <td>: {{ order.supplier.name }}</td>
+        </tr>
+        <tr>
+            <td><strong>Status Order</strong></td>
+            <td>: {{ order.get_status_display }}</td>
+        </tr>
+    </table>
+
+    <!-- TABEL DATA BARANG MASUK -->
+    <table class="content-table">
+        <thead>
+            <tr>
+                <th style="width: 50%;">Deskripsi Komponen</th>
+                <th style="width: 25%; text-align: center;">Qty Dipesan</th>
+                <th style="width: 25%; text-align: center;">Qty Diterima</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for line in order.lines.all %}
+            <tr>
+                <td>
+                    <strong>{{ line.part.name }}</strong>
+                    <div style="font-size: 8.5pt; color: #777;">{{ line.part.description }}</div>
+
+                    <!-- Menampilkan informasi nomor seri secara otomatis jika ada -->
+                    {% if line.received_items.count > 0 %}
+                        <div class="sn-list">
+                            <strong>Daftar SN / Batch:</strong>
+                            {% for item in line.received_items.all %}
+                                {{ item.serial }}{% if item.batch %}(Batch: {{ item.batch }}){% endif %}{% if not loop.last %}, {% endif %}
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </td>
+                <td style="text-align: center;">
+                    {{ line.quantity }} {{ line.part.units }}
+                </td>
+                <td style="text-align: center; font-weight: bold; color: green;">
+                    {{ line.received }} {{ line.part.units }}
+                </td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="3" style="text-align: center; color: red;">
+                    Tidak ada data item di dalam Purchase Order ini.
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- CATATAN PEMERIKSAAN FISIK -->
+    <div class="catatan-box">
+        <strong style="font-size: 10pt; text-transform: uppercase;">Catatan Pemeriksaan Gudang:</strong>
+        <p style="font-size: 9.5pt; margin-top: 5px; color: #444;">
+            Semua material di atas telah melalui proses pengecekan kuantitas dan verifikasi fisik oleh tim logistik. Barang dinyatakan diterima dalam kondisi baik, tersegel, dan sesuai spesifikasi pesanan.
+        </p>
+    </div>
+
+    <!-- KOLOM TANDA TANGAN -->
+    <table class="ttd-table">
+        <tr>
+            <td>
+                <div>Diserahkan Oleh (Kurir/Vendor),</div>
+                <div style="margin-top: 60px;">( ________________________ )</div>
+                <div style="font-size: 9pt; color: #666; margin-top: 5px;">Nama Jelas & Stempel</div>
+            </td>
+            <td>
+                <div>Diterima Oleh (Logistik Gudang),</div>
+                <div style="margin-top: 60px;">( ________________________ )</div>
+                <div style="font-size: 9pt; color: #666; margin-top: 5px;">Admin Gudang</div>
+            </td>
+        </tr>
+    </table>
+
+</body>
+</html>

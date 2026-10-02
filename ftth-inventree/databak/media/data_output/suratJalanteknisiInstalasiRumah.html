@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Surat Jalan & Picklist BO-BO-0002</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 15mm 15mm 15mm 15mm;
+        }
+        body {
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+            color: #333;
+            font-size: 11pt;
+            line-height: 1.4;
+        }
+        .header-table {
+            width: 100%;
+            border-bottom: 2px solid #333;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+        }
+        .title {
+            font-size: 18pt;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        .info-table {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        .info-table td {
+            padding: 4px 0;
+            vertical-align: top;
+        }
+        .qr-section {
+            text-align: right;
+            vertical-align: middle;
+        }
+        .qr-image {
+            width: 90px;
+            height: 90px;
+        }
+        .content-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+        .content-table th {
+            background-color: #f2f2f2;
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+            font-size: 10pt;
+            text-transform: uppercase;
+        }
+        .content-table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            vertical-align: top;
+            font-size: 10.5pt;
+        }
+        .catatan-box {
+            border: 1px dashed #666;
+            padding: 15px;
+            margin-bottom: 40px;
+            background-color: #fafafa;
+            border-radius: 4px;
+        }
+        .ttd-table {
+            width: 100%;
+            margin-top: 50px;
+        }
+        .ttd-table td {
+            text-align: center;
+            width: 50%;
+            padding-bottom: 60px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- HEADER BISNIS -->
+    <table class="header-table">
+        <tr>
+            <td>
+                <div class="title">Surat Jalan & Picklist</div>
+                <div style="font-size: 10pt; color: #666;">PROYEK FTTH - INVENTREE SYSTEM</div>
+            </td>
+            <td style="text-align: right; font-size: 9pt; color: #555;">
+                Dicetak: 2222-SepSepSep-26262626 1212:0909
+            </td>
+        </tr>
+    </table>
+
+    <!-- INFO TRANSAKSI & QR DOKUMEN -->
+    <table class="info-table">
+        <tr>
+            <td style="width: 20%;"><strong>No. Tiket / BO</strong></td>
+            <td style="width: 45%;">: BO-0002</td>
+            <td rowspan="3" class="qr-section">
+                <!-- Solusi Aman: Menggunakan QR generator universal via API Image -->
+                <img src="https://googleapis.com2&choe=UTF-8" class="qr-image" alt="QR Code">
+                <div style="font-size: 7.5pt; color: #666; text-align: right; margin-top: 4px; padding-right: 5px;">Scan untuk update via HP</div>
+            </td>
+        </tr>
+        <tr>
+            <td><strong>Jenis Paket</strong></td>
+            <td>: INSTALASI-RUMAH-STD </td>
+        </tr>
+        <tr>
+            <td><strong>Gudang Asal</strong></td>
+            <td>: Semarang Warehouse</td>
+        </tr>
+    </table>
+
+    <!-- TABEL MATERIAL & SERIAL NUMBER -->
+    <table class="content-table">
+        <thead>
+            <tr>
+                <th style="width: 35%;">Kategori Komponen</th>
+                <th style="width: 15%;">Qty Ambil</th>
+                <th style="width: 30%;">Serial / Batch No.</th>
+                <th style="width: 20%;">Lokasi Rak</th>
+            </tr>
+        </thead>
+        <tbody>
+            
+        </tbody>
+    </table>
+
+    <!-- PANDUAN LAPANGAN UNTUK KABEL DINAMIS -->
+    <div class="catatan-box">
+        <strong style="font-size: 10pt; text-transform: uppercase;">Catatan Re-assignment / Aktual Lapangan:</strong>
+        <p style="font-size: 9.5pt; margin-top: 5px; color: #444;">
+            * Khusus item kabel fleksibel, tulis sisa meteran fisik di bawah ini jika terdapat deviasi penggunaan:<br>
+            Sisa Meteran Rol Awal: ................. M &nbsp;&nbsp;|&nbsp;&nbsp; Sisa Meteran Akhir Lapangan: ................. M<br>
+            Total Kabel Terpakai Aktual: ................. M
+        </p>
+    </div>
+
+    <!-- AREA TANDA TANGAN -->
+    <table class="ttd-table">
+        <tr>
+            <td>
+                <div>Yang Menyerahkan,</div>
+                <div style="margin-top: 60px;">( ________________________ )</div>
+                <div style="font-size: 9pt; color: #666; margin-top: 5px;">Staf Gudang</div>
+            </td>
+            <td>
+                <div>Yang Menerima,</div>
+                <div style="margin-top: 60px;">( ________________________ )</div>
+                <div style="font-size: 9pt; color: #666; margin-top: 5px;">Kepala Teknisi</div>
+            </td>
+        </tr>
+    </table>
+
+</body>
+</html>

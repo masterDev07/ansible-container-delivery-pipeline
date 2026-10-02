@@ -1,0 +1,2 @@
+import{am as e,r}from"./index-B-r_2Vcj.js";import{a as u}from"./PluginUIFeature-Dsu3ZFHb.js";const a=()=>{const n=u({endpoint:e.plugin_list,defaultValue:[],hasPrimaryKey:!1,refetchOnMount:!0,refetchOnWindowFocus:!1,params:{active:!0}}),i=r.useCallback(t=>n.instance.filter(s=>!!s.mixins[t]),[n.instance]);return{plugins:n.instance,withMixin:i}},c=n=>a().withMixin(n);export{c as u};
+//# sourceMappingURL=UsePlugins-DrA3KCN5.js.map

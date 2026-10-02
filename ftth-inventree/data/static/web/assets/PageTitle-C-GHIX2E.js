@@ -1,0 +1,2 @@
+import{ac as c,r as i,j as E}from"./index-B-r_2Vcj.js";function f({title:t,subtitle:n}){const s=c(),a=i.useMemo(()=>{const o=s.getSetting("INVENTREE_INSTANCE","InvenTree"),r=s.isSet("INVENTREE_INSTANCE_TITLE",!1);let e="";return t&&(e+=t),n&&(e+=` - ${n}`),r&&(e=`${o} | ${e}`),e||(e=o),e},[t,n,s]);return i.useEffect(()=>{document.title=a},[a]),E.jsx("title",{children:a})}export{f as P};
+//# sourceMappingURL=PageTitle-C-GHIX2E.js.map

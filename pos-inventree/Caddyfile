@@ -1,0 +1,18 @@
+:8080 {
+    # Menyajikan file static
+    handle_path /static/* {
+        root * /var/www/static
+        file_server
+    }
+
+    # Menyajikan file media (upload)
+    handle_path /media/* {
+        root * /var/www/media
+        file_server
+    }
+
+    # Mengarahkan sisa request ke Django server
+    handle {
+        reverse_proxy inventree-server-pos:8000
+    }
+}

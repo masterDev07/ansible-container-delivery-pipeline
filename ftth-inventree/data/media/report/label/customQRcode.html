@@ -1,0 +1,87 @@
+{% extends "label/label_base.html" %}
+{% load l10n i18n barcode %}
+
+{% block style %}
+/* Mengatur ukuran halaman agar presisi mengikuti input pengaturan admin */
+@page {
+    {% localize off %}
+    size: {{ width }}mm {{ height }}mm;
+    {% endlocalize %}
+    margin: 0mm;
+    padding: 0mm;
+}
+
+.label-container {
+    display: table;
+    width: 100%;
+    height: 100%;
+    box-sizing: border-box;
+    padding: 1mm;
+    font-family: 'Helvetica', 'Arial', sans-serif;
+}
+
+/* Sisi Kiri untuk QR Code */
+.qr-column {
+    display: table-cell;
+    vertical-align: middle;
+    {% localize off %}
+    width: {{ height }}mm;
+    {% endlocalize %}
+}
+
+.qr-image {
+    width: 100%;
+    height: auto;
+    display: block;
+}
+
+/* Sisi Kanan untuk Teks */
+.text-column {
+    display: table-cell;
+    vertical-align: top;
+    padding-left: 2mm;
+}
+
+.title {
+    font-size: 8pt;
+    font-weight: bold;
+    line-height: 1.2;
+    margin-bottom: 1mm;
+}
+
+.detail {
+    font-size: 6.5pt;
+    color: #333;
+    line-height: 1.1;
+}
+{% endblock style %}
+
+{% block content %}
+<div class="label-container">
+    <!-- Kolom Barcode / QR Code -->
+    <div class="qr-column">
+        <!-- qr_data adalah data string bawaan dari sistem InvenTree -->
+        <img class="qr-image" alt="QR" src="{% qrcode qr_data %}">
+    </div>
+    
+    <!-- Kolom Teks Informasi -->
+    <div class="text-column">
+        <!-- Fallback ganda: mencoba membaca stockitem atau item -->
+        <div class="title">
+            {{ stockitem.part.name }}{{ item.part.name }}
+        </div>
+        
+        <div class="detail">
+            ID: #{{ stockitem.id }}{{ item.id }}<br>
+            
+            {% if stockitem.part.IPN or item.part.IPN %}
+            IPN: {{ stockitem.part.IPN }}{{ item.part.IPN }}<br>
+            {% endif %}
+            
+            {% if stockitem.serial or item.serial %}
+            SN: {{ stockitem.serial }}{{ item.serial }}
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock content %}

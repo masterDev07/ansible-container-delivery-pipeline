@@ -1,0 +1,5 @@
+Parent_IPN,Part_IPN,Quantity,Note
+ir-std,CBL-DRP-002,150,Estimasi kabel drop core 150 meter per rumah
+ir-std,ACC-KLM-GRIP,2,Klem penarik kabel di tiang dan dinding rumah
+ir-std,ELC-MCV-001,1,Modem / Media Converter di dalam rumah pelanggan
+ir-std,CON-ALC-099,0.05,Cairan alkohol pembersih core kaca saat splicing

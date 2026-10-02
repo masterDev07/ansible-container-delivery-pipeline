@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+    /* Mengatur ukuran kertas label (contoh standard: 50mm x 30mm) */
+    @page {
+        size: 50mm 30mm;
+        margin: 0;
+    }
+
+    body {
+        font-family: 'Arial', sans-serif;
+        font-size: 8pt;
+        margin: 2mm;
+        padding: 0;
+        color: #333;
+    }
+
+    /* Container Utama Label */
+    .label-container {
+        width: 46mm;
+        height: 26mm;
+        display: grid;
+        grid-template-columns: 14mm 1fr;
+        gap: 2mm;
+        align-items: start;
+    }
+
+    /* Bagian Kiri: QR Code */
+    .qr-section {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .qr-code {
+        width: 14mm;
+        height: 14mm;
+    }
+
+    .stock-id {
+        font-size: 6pt;
+        font-weight: bold;
+        color: #777;
+        margin-top: 1mm;
+        text-align: center;
+    }
+
+    /* Bagian Kanan: Informasi Material */
+    .info-section {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        height: 100%;
+    }
+
+    .part-name {
+        font-size: 9pt;
+        font-weight: bold;
+        line-height: 1.1;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+    }
+
+    .part-ipn {
+        font-size: 6.5pt;
+        color: #555;
+        margin-bottom: 1mm;
+    }
+
+    .meta-data {
+        font-size: 7pt;
+        border-top: 0.5px solid #ddd;
+        padding-top: 1mm;
+    }
+
+    .highlight-qty {
+        font-weight: bold;
+        color: #000;
+    }
+
+    /* Informasi Penjaga Gudang */
+    .keeper-info {
+        font-size: 6pt;
+        font-style: italic;
+        color: #666;
+        margin-top: 0.5mm;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+</style>
+</head>
+<body>
+
+<div class="label-container">
+
+    <!-- KOLOM KIRI: QR CODE & ID -->
+    <div class="qr-section">
+        <!-- InvenTree akan otomatis me-render QR Code dari item ini -->
+        <img class="qr-code" src="{% qrcode item %}">
+        <div class="stock-id">#{{ item.id }}</div>
+    </div>
+
+    <!-- KOLOM KANAN: DETAIL MATERIAL -->
+    <div class="info-section">
+        <div>
+            <!-- Nama Material Fiber Optic (e.g., Kabel Udara 24 Core) -->
+            <div class="part-name">{{ item.part.name }}</div>
+            <!-- Nomor Part Internal jika ada -->
+            {% if item.part.IPN %}
+            <div class="part-ipn">IPN: {{ item.part.IPN }}</div>
+            {% endif %}
+        </div>
+
+        <div class="meta-data">
+            <!-- Jumlah Stok Saat Ini -->
+            <div>Stok: <span class="highlight-qty">{{ item.quantity }} {{ item.part.units }}</span></div>
+
+            <!-- Lokasi Penyimpanan -->
+            <div>Lokasi: {{ item.location.name|default:"Tanpa Lokasi" }}</div>
+
+            <!-- Nama Penjaga Gudang (Mengambil nama Admin/User yang mencetak label) -->
+            <div class="keeper-info">WH Keeper: {{ user.get_full_name|default:user.username }}</div>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>
