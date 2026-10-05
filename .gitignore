@@ -1,6 +1,8 @@
 # Mengabaikan folder data internal dan cache InvenTree
 inventree/data/
 inventree/.env
+ftth-inventree/.env
+pos-inventree/.env
 *.rdb
 *.db
 inventree/skrip_custom_invtree/
